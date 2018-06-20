@@ -1,0 +1,12 @@
+thumb:
+    folder: %wwwFolder%_%images%_%fileType%_%thumb%
+    name: %actualDate%_%actualTime%_%hashName%_%ext%
+    size: thumb
+biggerThumb:
+    folder: %wwwFolder%_%images%_%fileType%_%biggerthumb%
+    name: %actualDate%_%actualTime%_%hashName%_%ext%
+    size: biggerThumb
+full:
+    folder: %wwwFolder%_%images%_%fileType%
+    name: %actualDate%_%actualTime%_%hashName%_%ext%
+    size: null

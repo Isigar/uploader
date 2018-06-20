@@ -1,0 +1,62 @@
+<script src="{$basePath}/js/dropzone.js"></script>
+<script>
+    Dropzone.autoDiscover = false;
+
+    $(".uploader").dropzone({
+        init: function () {
+            {if $onSuccess}
+            this.on("success", function (file, response) {
+                $.ajax({
+                    type: "POST",
+                    url: {link onSuccess!},
+                    data: {
+                        'uploadFile': {
+                            'upload': file.upload,
+                            'type': file.type,
+                            'size': file.size,
+                            'height': file.height,
+                            'dataURL': file.dataURL,
+                            'width': file.width
+                        }
+                    }
+                });
+            })
+            {if $onAddedFile}
+                ,
+            {/if}
+            {/if}
+            {if $onAddedFile}
+            this.on("addedfile", function (file) {
+                $.ajax({
+                    type: "POST",
+                    url: {link onAddedFile!},
+                    data: {
+                        'uploadFile': {
+                            'upload': file.upload,
+                            'type': file.type,
+                            'size': file.size,
+                            'height': file.height,
+                            'dataURL': file.dataURL,
+                            'width': file.width
+                        }
+                    }
+                });
+            });
+            {/if}
+        },
+        {join(",",$settings)|noescape}
+        {if is_null($options->getUrl())}
+        , url: {link onUpload!}
+        {/if}
+    });
+
+    $(".img-preview").stop().hover(function () {
+        $(".img-preview-overlay",this).animate({
+           opacity: 1
+        });
+    },function () {
+        $(".img-preview-overlay",this).animate({
+            opacity: 0
+        });
+    })
+</script>

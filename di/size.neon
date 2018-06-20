@@ -1,0 +1,8 @@
+thumb:
+    width: 256
+    height: 256
+    format: THUMBNAIL
+biggerThumb:
+    width: 512
+    height: 512
+    format: THUMBNAIL

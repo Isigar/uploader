@@ -1,0 +1,50 @@
+<div class="uploader jumbotron jumbotron-fluid"  style="padding-top:10px; padding-bottom:10px;" >
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                <h1 class="display-4">File upload</h1>
+                <p class="lead">Click or take and drop files into this space!</p>
+            </div>
+            <div class="col-sm-12 col-md-8">
+                <div style="border-radius:3px; border-top: 1px solid rgba(200,200,200,0.8); border-left: 1px solid rgba(200,200,200,0.8); border-right: 1px solid rgba(200,200,200,0.8);  border-bottom:4px solid rgba(200,200,200,0.8); padding:10px; margin: 10px; background:white;">
+                    <form action="{$_uploader->getOptions()->getUrl()}" class="uploader dropzone">
+                        <div class="fallback">
+                            <input name="file" type="file" multiple />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {snippet imgList}
+        <div class="row">
+            {foreach $images as $image}
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                    <div class="thumb img-preview">
+                        <img src="{$basePath}/{$image->getType()}/{$image->getMediaData->getName()}" class="img-thumbnail">
+                        <div class="card-img-overlay img-preview-overlay" style="opacity:0; background:rgba(200,200,200,0.5)">
+                            <div class="container">
+                                <p class="card-text">Size: {$image->getMediaData()->getSize()}<br>
+                                <div class="btn-group">
+                                    <a href="{$_uploader->createLink("Homepage:show",$image->getId())}" class="btn btn-success upload">
+                                        Show
+                                    </a>
+                                    <a href="{$_uploader->createLink("Homepage:delete",$image->getId())}" class="btn btn-danger delete">
+                                        Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {/foreach}
+        </div>
+        {/snippet}
+        <hr>
+        <div class="btn-group">
+            <button class="btn btn-danger delete">
+                Delete all
+            </button>
+        </div>
+    </div>
+
+</div>

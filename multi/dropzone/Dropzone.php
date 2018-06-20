@@ -21,6 +21,7 @@ use Relisoft\Uploader\DI\UploaderException;
 use Relisoft\Uploader\Helper\Format;
 use Relisoft\Uploader\Helper\Save;
 use Relisoft\Uploader\Helper\Size;
+use Relisoft\Uploader\Storage\IMediaItem;
 use Relisoft\Uploader\Storage\Temp\Temporary;
 use Tracy\Debugger;
 
@@ -451,8 +452,8 @@ class Dropzone extends Control
         $this->files = $files;
     }
 
-    public function addFile(array $file){
-        $this->files[] = ArrayHash::from($file);
+    public function addFile(IMediaItem $file){
+        $this->files[] = $file;
     }
 
     /**
@@ -461,6 +462,21 @@ class Dropzone extends Control
     public function getConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * @param $type
+     * @return array
+     */
+    public function getFolder($type){
+        $return = [];
+        foreach($this->getSave()->getSaveOptions() as $option){
+            $relativePath = str_replace("%wwwFolder%","",$option['folder']);
+            $folder = $this->getFormat()->getParser()->parse($relativePath);
+            $folderReal = $this->getFormat()->replaceVariables($folder,$this->getConfig(),new FileUpload([]),$this->getFormat()::TYPE_FOLDER,$type);
+            $return[$option['size'] ?? "full"] = $folderReal;
+        }
+        return $return;
     }
 
 

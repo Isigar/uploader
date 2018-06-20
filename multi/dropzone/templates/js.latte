@@ -1,7 +1,9 @@
 <script src="{$basePath}/js/dropzone.js"></script>
+<script src="{$basePath}/js/gallery/dist/js/lightgallery-all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
+<script src="{$basePath}/js/uploader.dropzone.js"></script>
 <script>
     Dropzone.autoDiscover = false;
-
     $(".uploader").dropzone({
         init: function () {
             {if $onSuccess}
@@ -49,14 +51,4 @@
         , url: {link onUpload!}
         {/if}
     });
-
-    $(".img-preview").stop().hover(function () {
-        $(".img-preview-overlay",this).animate({
-           opacity: 1
-        });
-    },function () {
-        $(".img-preview-overlay",this).animate({
-            opacity: 0
-        });
-    })
 </script>

@@ -35,9 +35,13 @@ class MediaItemData
     /**
      * @return mixed
      */
-    public function getFolder()
+    public function getFolder($size = null)
     {
-        return $this->folder;
+        if(isset($this->folder[$size])){
+            return $this->folder[$size];
+        }else{
+            return $this->folder;
+        }
     }
 
     /**
@@ -136,12 +140,23 @@ class MediaItemData
         $this->width = $width;
     }
 
+    function formatBytes($size, $precision = 2)
+    {
+        $base = log($size, 1024);
+        $suffixes = array('', 'K', 'M', 'G', 'T');
+
+        return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
+    }
+
     /**
      * @return mixed
      */
-    public function getSize()
+    public function getSize($unformated = false)
     {
-        return $this->size;
+        if ($unformated)
+            return $this->size;
+        else
+            return $this->formatBytes($this->size);
     }
 
     /**

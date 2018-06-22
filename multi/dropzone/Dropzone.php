@@ -120,10 +120,9 @@ class Dropzone extends Control
      * @return bool
      * @throws UploaderException
      */
-    public function process(FileUpload $fileUpload,object $typeObject){
+    public function process(FileUpload $fileUpload){
         if($fileUpload->isOk()){
             $this->save->setSizes($this->size->getSize());
-            $this->setFileType($typeObject);
 
             $temp = Temporary::returnDirectory();
             $path = $temp."\\".md5($fileUpload->getName());
@@ -140,10 +139,12 @@ class Dropzone extends Control
                 $folderReplaces = $this->format->replaceVariables($folder,$this->getConfig(),$fileUpload,$this->format::TYPE_FOLDER,$type);
 
                 $this->existsDestination($folderReplaces);
-                $img = $this->createBySize($path,$option);
+                $img = $this->getSize()->createBySize($path,$option);
                 $img->save($folderReplaces."/".$nameReplaces);
-            }
 
+                /** TODO: Find storage, load, save image to media list */
+            }
+            $this->getPresenter()->redrawControl("imgList");
             FileSystem::delete($path);
             return true;
         }else{
@@ -154,27 +155,6 @@ class Dropzone extends Control
     public function existsDestination($folder){
         @FileSystem::createDir($folder);
         return true;
-    }
-
-    public function createBySize($path,$options){
-        if(is_null($options['size'])){
-            $img = Image::fromFile($path);
-            return $img;
-        }else{
-            $img = Image::fromFile($path);
-
-            if($options['size']['format'] == 'THUMBNAIL')
-                $img->resize($options['size']['width'],$options['size']['height'],Image::FILL | Image::EXACT);
-            elseif($options['size']['format'] == 'FILL')
-                $img->resize($options['size']['width'],$options['size']['height'],Image::FILL);
-            elseif($options['size']['format'] == 'EXACT')
-                $img->resize($options['size']['width'],$options['size']['height'],Image::EXACT);
-            elseif($options['size']['format'] == 'STRETCH')
-                $img->resize($options['size']['width'],$options['size']['height'],Image::STRETCH);
-            elseif($options['size']['format'] == 'SHRINK_ONLY')
-                $img->resize($options['size']['width'],$options['size']['height'],Image::SHRINK_ONLY);
-            return $img;
-        }
     }
 
     /**

@@ -140,7 +140,7 @@ class MediaItemData
         $this->width = $width;
     }
 
-    function formatBytes($size, $precision = 2)
+    public function formatBytes($size, $precision = 2)
     {
         $base = log($size, 1024);
         $suffixes = array('', 'K', 'M', 'G', 'T');

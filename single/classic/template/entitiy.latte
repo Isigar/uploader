@@ -1,0 +1,12 @@
+{form uploader}
+    <div class="form-group">
+        {label file/}
+        {input file,class=>["form-control"]}
+        <p class="text-muted">
+            {$options->getHelpText()}
+        </p>
+    </div>
+    <div class="form-group">
+        {input submt, class=>["btn","btn-success"]}
+    </div>
+{/form}

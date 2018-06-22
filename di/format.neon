@@ -1,8 +1,8 @@
 time: "H-i"
 date: "d-m-Y"
 types:
-    deal: App\Model\Deal
     category: App\Model\Category
     composite_product: App\Model\CompositeProduct
     product: App\Model\Product
     service: App\Model\Service
+    deal: App\Model\Deal

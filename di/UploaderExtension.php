@@ -21,6 +21,8 @@ use Relisoft\Uploader\Helper\Save;
 use Relisoft\Uploader\Helper\Size;
 use Relisoft\Uploader\Multi\Dropzone\Dropzone;
 use Relisoft\Uploader\Multi\Dropzone\DropzoneOptions;
+use Relisoft\Uploader\Single\Classic\Classic;
+use Relisoft\Uploader\Single\Classic\ClassicOptions;
 use Relisoft\Uploader\Storage\Temp\Temp;
 use Relisoft\Uploader\Storage\Temp\Temporary;
 use Tracy\Debugger;
@@ -32,7 +34,8 @@ class UploaderExtension extends CompilerExtension
         'baseUri' => null,
         'wwwDir' => null,
         'request' =>  null,
-        'linkGenerator' => null
+        'linkGenerator' => null,
+        'storage' => "ndb"
     ];
 
     private $httpRequest;
@@ -57,6 +60,9 @@ class UploaderExtension extends CompilerExtension
         $container->addDefinition($this->prefix("dropzone"))
             ->setFactory(Dropzone::class, [$this->getDefaultsDropzoneConfig(),$config])
             ->addSetup('getRequirements',['@uploader.size','@uploader.format','@uploader.save']);
+        $container->addDefinition($this->prefix("classic"))
+            ->setFactory(Classic::class, [$this->getDefaultClassicOptions(),$config])
+            ->addSetup('getRequirements',['@uploader.size','@uploader.format','@uploader.save']);
         parent::loadConfiguration();
     }
 
@@ -66,6 +72,15 @@ class UploaderExtension extends CompilerExtension
     private function getDefaultsDropzoneConfig()
     {
         $options = new DropzoneOptions();
+        return $options;
+    }
+
+    /**
+     * @return ClassicOptions
+     */
+    private function getDefaultClassicOptions()
+    {
+        $options = new ClassicOptions();
         return $options;
     }
 

@@ -3,4 +3,6 @@ Nette uploader extension, single, multi, thumbs and everything!
 
 Docs: https://github.com/Isigar/uploader/wiki/Setup
 
-Install: composer require relisoft/uploader
+*Install:* 
+composer require relisoft/uploader
+

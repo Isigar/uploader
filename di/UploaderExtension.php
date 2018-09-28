@@ -37,6 +37,9 @@ class UploaderExtension extends CompilerExtension
         'wwwDir' => null,
         'request' =>  null,
         'linkGenerator' => null,
+        'sizeConfig' => __DIR__."/size.neon",
+        'saveConfig' => __DIR__."/save.neon",
+        'formatConfig' => __DIR__."/format.neon",
         'storage' => EntityManager::class
     ];
 
@@ -91,7 +94,7 @@ class UploaderExtension extends CompilerExtension
     private function getFormatConfig()
     {
         try {
-            $file = FileSystem::read(__DIR__ . "/format.neon");
+            $file = FileSystem::read($this->config["formatConfig"]);
             $neonFormat = Neon::decode($file);
             return ArrayHash::from($neonFormat);
         } catch (\Exception $e) {
@@ -102,7 +105,7 @@ class UploaderExtension extends CompilerExtension
     private function getSizeConfig()
     {
         try {
-            $file = FileSystem::read(__DIR__ . "/size.neon");
+            $file = FileSystem::read($this->config["sizeConfig"]);
             $neonFormat = Neon::decode($file);
             return ArrayHash::from($neonFormat);
         } catch (\Exception $e) {
@@ -113,7 +116,7 @@ class UploaderExtension extends CompilerExtension
     private function getSaveConfig()
     {
         try {
-            $file = FileSystem::read(__DIR__ . "/save.neon");
+            $file = FileSystem::read($this->config["saveConfig"]);
             $neonFormat = Neon::decode($file);
             return ArrayHash::from($neonFormat);
         } catch (\Exception $e) {

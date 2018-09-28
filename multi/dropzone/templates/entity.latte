@@ -11,19 +11,30 @@
                         <div class="fallback">
                             <input name="file" type="file" multiple />
                         </div>
+                        {snippet imgList}
+                            <div class="row" id="">
+                                {foreach $images as $image}
+                                    <div class="dz-preview dz-processing dz-image-preview dz-success dz-complete">
+                                        <div class="dz-image">
+                                            {var $src = $image->getMediaData("thumbnail")->getFolder()."/".$image->getMediaData("thumbnail")->getName()}
+                                            <img data-dz-thumbnail="" alt="{$image->getMediaData("thumbnail")->getName()}" src="{$basePath}/{$src}">
+                                            <img src="{$basePath}{$src}">
+                                        </div>
+                                        <div class="dz-details">
+                                            <div class="dz-filename">
+                                                <span data-dz-name="">{$image->getMediaData("thumbnail")->getName()}</span>
+                                            </div>
+                                        </div>
+                                        <a class="dz-remove ajax" href="{link removeImage!,$image->getId()}" data-dz-remove="">Remove file</a>
+                                    </div>
+                                {/foreach}
+                            </div>
+                        {/snippet}
                     </form>
                 </div>
             </div>
         </div>
-        {snippet imgList}
-        <div class="row" id="uploader-dropzone-gallery">
-            {foreach $images as $image}
-                <a href="{$basePath}/{$image->getMediaData()->getFolder("full")}/{$image->getMediaData()->getName()}">
-                    <img src="{$basePath}/{$image->getMediaData()->getFolder("thumb")}/{$image->getMediaData()->getName()}">
-                </a>
-            {/foreach}
-        </div>
-        {/snippet}
+
         <hr>
         <div class="btn-group">
             <button class="btn btn-danger delete">

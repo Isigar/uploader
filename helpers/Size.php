@@ -28,8 +28,9 @@ class Size
         return $this->size;
     }
 
-    public function createBySize($path,$options){
+    public function createBySize($path,$options) : ?Image{
         if(is_null($options['size'])){
+            /** @var Image $img */
             $img = Image::fromFile($path);
             return $img;
         }else{

@@ -9,6 +9,7 @@
 namespace Relisoft\Uploader\DI;
 
 
+use Kdyby\Doctrine\EntityManager;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Statement;
 use Nette\Http\Request;
@@ -23,6 +24,7 @@ use Relisoft\Uploader\Multi\Dropzone\Dropzone;
 use Relisoft\Uploader\Multi\Dropzone\DropzoneOptions;
 use Relisoft\Uploader\Single\Classic\Classic;
 use Relisoft\Uploader\Single\Classic\ClassicOptions;
+use Relisoft\Uploader\Storage\Storage;
 use Relisoft\Uploader\Storage\Temp\Temp;
 use Relisoft\Uploader\Storage\Temp\Temporary;
 use Tracy\Debugger;
@@ -35,7 +37,7 @@ class UploaderExtension extends CompilerExtension
         'wwwDir' => null,
         'request' =>  null,
         'linkGenerator' => null,
-        'storage' => "ndb"
+        'storage' => EntityManager::class
     ];
 
     private $httpRequest;
@@ -47,6 +49,8 @@ class UploaderExtension extends CompilerExtension
         $config = $this->validateConfig($this->defaults,$this->config);
 
         $container = $this->getContainerBuilder();
+        $container->addDefinition($this->prefix("storage"))
+            ->setFactory(Storage::class);
         $container->addDefinition($this->prefix("temp"))
             ->setFactory(Temporary::class);
         $container->addDefinition($this->prefix("parser"))
@@ -59,10 +63,10 @@ class UploaderExtension extends CompilerExtension
             ->setFactory(Save::class, [$this->getSaveConfig()]);
         $container->addDefinition($this->prefix("dropzone"))
             ->setFactory(Dropzone::class, [$this->getDefaultsDropzoneConfig(),$config])
-            ->addSetup('getRequirements',['@uploader.size','@uploader.format','@uploader.save']);
+            ->addSetup('getRequirements',['@uploader.size','@uploader.format','@uploader.save','@uploader.storage']);
         $container->addDefinition($this->prefix("classic"))
             ->setFactory(Classic::class, [$this->getDefaultClassicOptions(),$config])
-            ->addSetup('getRequirements',['@uploader.size','@uploader.format','@uploader.save']);
+            ->addSetup('getRequirements',['@uploader.size','@uploader.format','@uploader.save','@uploader.storage']);
         parent::loadConfiguration();
     }
 

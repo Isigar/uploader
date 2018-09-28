@@ -17,6 +17,7 @@ use Relisoft\Uploader\DI\UploaderException;
 use Relisoft\Uploader\Helper\Format;
 use Relisoft\Uploader\Helper\Save;
 use Relisoft\Uploader\Helper\Size;
+use Relisoft\Uploader\Storage\Storage;
 use Relisoft\Uploader\Storage\Temp\Temporary;
 
 class Classic extends Control
@@ -46,12 +47,18 @@ class Classic extends Control
      */
     private $config;
 
+    /**
+     * @var Storage
+     */
+    private $storage;
+
     public $onUpload;
 
     public function __construct(ClassicOptions $options,$config)
     {
         $this->options = $options;
         $this->config = $config;
+        parent::__construct();
     }
 
     protected function createComponentUploader(){
@@ -92,10 +99,11 @@ class Classic extends Control
         $this->template->render();
     }
 
-    public function getRequirements(Size $size, Format $format, Save $save){
+    public function getRequirements(Size $size, Format $format, Save $save, Storage $storage){
         $this->size = $size;
         $this->format = $format;
         $this->save = $save;
+        $this->storage =$storage;
     }
 
     /**
@@ -142,7 +150,7 @@ class Classic extends Control
             $temp = Temporary::returnDirectory();
             $path = $temp."\\".md5($fileUpload->getName());
             $fileUpload->move($path);
-
+            $storageImages = [];
             foreach($this->save->getSaveOptions() as $option){
                 $this->save->assignSize($option);
 
@@ -157,14 +165,30 @@ class Classic extends Control
                 $img = $this->getSize()->createBySize($path,$option);
                 $img->save($folderReplaces."/".$nameReplaces);
 
-                /** TODO: Find storage, load, save image to media list */
+                $imageData = [
+                    "folder" => $folderReplaces,
+                    "name" => $nameReplaces,
+                    "rawOptions" => $option,
+                    "type" => $type,
+                ];
+
+                $storageImages[] = $this->storage->save($imageData);
             }
             $this->getPresenter()->redrawControl("imgList");
             FileSystem::delete($path);
-            return true;
+            return $storageImages;
         }else{
             return false;
         }
+    }
+
+    public function getStorageData(){
+        return $this->storage->getData();
+    }
+
+    public function cleanStorage()
+    {
+        return $this->storage->clean();
     }
 
     public function existsDestination($folder){

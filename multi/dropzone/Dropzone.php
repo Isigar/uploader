@@ -21,7 +21,9 @@ use Relisoft\Uploader\DI\UploaderException;
 use Relisoft\Uploader\Helper\Format;
 use Relisoft\Uploader\Helper\Save;
 use Relisoft\Uploader\Helper\Size;
+use Relisoft\Uploader\Storage\Doctrine\MediaItem;
 use Relisoft\Uploader\Storage\IMediaItem;
+use Relisoft\Uploader\Storage\Storage;
 use Relisoft\Uploader\Storage\Temp\Temporary;
 use Tracy\Debugger;
 
@@ -71,9 +73,15 @@ class Dropzone extends Control
      */
     private $fileType;
 
-    public function getRequirements(Size $size, Format $format,Save $save){
+    /**
+     * @var Storage
+     */
+    private $storage;
+
+    public function getRequirements(Size $size, Format $format,Save $save,Storage $storage){
         $this->size = $size;
         $this->format = $format;
+        $this->storage = $storage;
         $this->save = $save;
     }
 
@@ -115,6 +123,10 @@ class Dropzone extends Control
         $this->template->render();
     }
 
+    public function toBase64(string $absolutePath){
+        return base64_encode(FileSystem::read($absolutePath));
+    }
+
     /**
      * @param FileUpload $fileUpload
      * @return bool
@@ -123,11 +135,10 @@ class Dropzone extends Control
     public function process(FileUpload $fileUpload){
         if($fileUpload->isOk()){
             $this->save->setSizes($this->size->getSize());
-
             $temp = Temporary::returnDirectory();
             $path = $temp."\\".md5($fileUpload->getName());
             $fileUpload->move($path);
-
+            $imageFormats = [];
             foreach($this->save->getSaveOptions() as $option){
                 $this->save->assignSize($option);
 
@@ -137,24 +148,64 @@ class Dropzone extends Control
 
                 $nameReplaces = $this->format->replaceVariables($name,$this->getConfig(),$fileUpload,$this->format::TYPE_NAME,$type);
                 $folderReplaces = $this->format->replaceVariables($folder,$this->getConfig(),$fileUpload,$this->format::TYPE_FOLDER,$type);
+                $relativeFolder = $folder;
+                unset($relativeFolder[0]);
+                $folderReplacesRelative = $this->format->replaceVariables($relativeFolder,$this->getConfig(),$fileUpload,$this->format::TYPE_FOLDER,$type);
 
                 $this->existsDestination($folderReplaces);
+                /** @var Image $img */
                 $img = $this->getSize()->createBySize($path,$option);
                 $img->save($folderReplaces."/".$nameReplaces);
 
-                /** TODO: Find storage, load, save image to media list */
+                $image = [
+                    "absoluteFolder" => $folderReplaces,
+                    "name" => $nameReplaces,
+                    "rawOptions" => $option,
+                    "type" => $type,
+                    "width" => $img->getWidth(),
+                    "height" => $img->getHeight(),
+                    "folder" => $folderReplacesRelative
+                ];
+                $imageFormats[] = $image;
             }
+            $storageResult = $this->storage->save($imageFormats);
             $this->getPresenter()->redrawControl("imgList");
             FileSystem::delete($path);
-            return true;
+            return $storageResult;
         }else{
             return false;
         }
     }
 
+    public function handleRemoveImage(int $imageId){
+        $this->storage->removeById($imageId);
+        Debugger::barDump($this->storage->getData(),"new storage");
+        $this->template->images = $this->storage->getData();
+        $this->redrawControl("imgList");
+    }
+
+    public function getStorageData(){
+        if(is_null($this->storage->getData())){
+            return [];
+        }
+        return $this->storage->getData();
+    }
+
+    public function cleanStorage(){
+        return $this->storage->clean();
+    }
+
     public function existsDestination($folder){
         @FileSystem::createDir($folder);
         return true;
+    }
+
+    public function setFiles(array $files){
+        $this->files = $files;
+    }
+
+    public function addFile(MediaItem $med){
+        $this->files[] = $med;
     }
 
     /**
@@ -422,18 +473,6 @@ class Dropzone extends Control
     public function getFiles()
     {
         return $this->files;
-    }
-
-    /**
-     * @param mixed $files
-     */
-    public function setFiles(array $files)
-    {
-        $this->files = $files;
-    }
-
-    public function addFile(IMediaItem $file){
-        $this->files[] = $file;
     }
 
     /**

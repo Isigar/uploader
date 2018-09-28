@@ -9,18 +9,53 @@
 namespace Relisoft\Uploader\Storage\Doctrine;
 
 
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToOne;
 use Relisoft\Uploader\Storage\IMediaItem;
 
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="customer_media_item")
+ */
 class MediaItem implements IMediaItem
 {
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     */
     private $id;
+    /**
+     * @ORM\Column(type="integer")
+     */
     private $id_customer;
+    /**
+     * @ORM\Column(type="string")
+     */
     private $type;
+    /**
+     * @ORM\Column(type="integer")
+     */
     private $display_top;
+    /**
+     * @ORM\Column(type="integer")
+     */
     private $order_index;
+    /**
+     * @ORM\OneToMany(targetEntity="MediaItemData", mappedBy="mediaItem",cascade={"DELETE","PERSIST"})
+     */
     private $media_data;
+    /**
+     * @ORM\Column(type="datetime")
+     */
     private $time_create;
+    /**
+     * @ORM\Column(type="datetime")
+     */
     private $time_modify;
+    /**
+     * @ORM\Column(type="integer")
+     */
     private $id_item;
 
     /**
@@ -106,8 +141,22 @@ class MediaItem implements IMediaItem
     /**
      * @return mixed
      */
-    public function getMediaData()
+    public function getMediaData($format = null)
     {
+        if(empty($this->media_data)){
+            return [];
+        }
+        if(is_null($format))
+            return $this->media_data;
+
+        /** @var MediaItemData $med */
+        foreach ($this->media_data as $med){
+            if(strtolower($format) == strtolower($med->getFormat())){
+                return $med;
+            }else{
+                continue;
+            }
+        }
         return $this->media_data;
     }
 

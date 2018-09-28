@@ -10,6 +10,7 @@ namespace Relisoft\Uploader\Storage\Doctrine;
 
 
 use Kdyby\Doctrine\EntityManager;
+use Nette\Http\FileUpload;
 use Relisoft\Uploader\DI\UploaderException;
 use Relisoft\Uploader\Storage\IMediaItemManager;
 

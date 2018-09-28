@@ -1,0 +1,10 @@
+{
+  "name": "relisoft/uploader",
+  "description": "Nette uploader like control service",
+  "require": {
+    "php": "^7.0",
+    "nette/forms": "^2.4",
+    "nette/utils": "^2.4",
+    "nette/http": "^2.4"
+  }
+}

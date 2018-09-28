@@ -1,10 +1,20 @@
 {
   "name": "relisoft/uploader",
+  "type": "library",
+  "keywords": ["nette", "uploader", "session storage","single upload"],
+  "license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
   "description": "Nette uploader like control service",
   "require": {
     "php": "^7.0",
     "nette/forms": "^2.4",
     "nette/utils": "^2.4",
     "nette/http": "^2.4"
-  }
+  },
+  "authors": [
+    {
+      "name": "Isigar",
+      "homepage": "https://relisoft.cz",
+      "email": "info@relisoft.cz"
+    }
+  ]
 }

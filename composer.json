@@ -10,11 +10,17 @@
     "nette/utils": "^2.4",
     "nette/http": "^2.4"
   },
+  "minimum-stability":"dev",
   "authors": [
     {
       "name": "Isigar",
       "homepage": "https://relisoft.cz",
       "email": "info@relisoft.cz"
     }
-  ]
+  ],
+  "autoload": {
+    "psr-4": {
+      "Relisoft\\Uploader\\": "/"
+    }
+  }
 }

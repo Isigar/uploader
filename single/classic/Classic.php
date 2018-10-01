@@ -147,7 +147,7 @@ class Classic extends Control
         if($fileUpload->isOk()){
             $this->save->setSizes($this->size->getSize());
 
-            $temp = Temporary::returnDirectory();
+            $temp = $this->presenter->context->getParameters()['tempDir'];
             $path = $temp."\\".md5($fileUpload->getName());
             $fileUpload->move($path);
             $storageImages = [];

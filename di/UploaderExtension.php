@@ -25,8 +25,6 @@ use Relisoft\Uploader\Multi\Dropzone\DropzoneOptions;
 use Relisoft\Uploader\Single\Classic\Classic;
 use Relisoft\Uploader\Single\Classic\ClassicOptions;
 use Relisoft\Uploader\Storage\Storage;
-use Relisoft\Uploader\Storage\Temp\Temp;
-use Relisoft\Uploader\Storage\Temp\Temporary;
 use Tracy\Debugger;
 
 class UploaderExtension extends CompilerExtension
@@ -54,8 +52,6 @@ class UploaderExtension extends CompilerExtension
         $container = $this->getContainerBuilder();
         $container->addDefinition($this->prefix("storage"))
             ->setFactory(Storage::class);
-        $container->addDefinition($this->prefix("temp"))
-            ->setFactory(Temporary::class);
         $container->addDefinition($this->prefix("parser"))
             ->setFactory(Parser::class);
         $container->addDefinition($this->prefix("format"))

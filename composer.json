@@ -20,7 +20,9 @@
   ],
   "autoload": {
     "psr-4": {
-      "Relisoft\\Uploader\\": "/"
+      "Relisoft\\Uploader\\": "/",
+      "Relisoft\\Uploader\\Storage\\": "/storage",
+      "Relisoft\\Uploader\\Helper\\": "/helpers"
     }
   }
 }

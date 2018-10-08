@@ -22,7 +22,8 @@
     "psr-4": {
       "Relisoft\\Uploader\\": "/",
       "Relisoft\\Uploader\\Storage\\": "/storage",
-      "Relisoft\\Uploader\\Helper\\": "/helpers"
+      "Relisoft\\Uploader\\Helper\\": "/helpers",
+      "Relisoft\\Uploader\\DI\\": "/di"
     }
   }
 }

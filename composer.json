@@ -24,7 +24,7 @@
       "Relisoft\\Uploader\\Storage\\": "/storage",
       "Relisoft\\Uploader\\Helper\\": "/helpers",
       "Relisoft\\Uploader\\DI\\": "/di"
-      "Relisoft\\Uploader\\Multi\\Dropzone\\": "/multi/dropzone"
+      "Relisoft\\Uploader\\Multi\\Dropzone\\": "/multi/dropzone",
       "Relisoft\\Uploader\\Single\\Classic\\": "/single/classic"
     }
   }
